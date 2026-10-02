@@ -12,38 +12,13 @@ body {
   font-family: "Open Sans", sans-serif;
   color: #fff;
   position: relative;
-  background-color: #010e1b !important;
+  background: transparent;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  background: linear-gradient(-45deg, #010e1b, #032142, #001b33, #02386e);
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 100vh;
-  z-index: -1;
-}
+body::before { display: none; }
 
 @media (min-width: 1024px) {
-  body::before {
-    background-attachment: fixed;
-  }
-}
-
-@keyframes gradientBG {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  body::before { display: none; }
 }
 
 a {
@@ -63,7 +38,7 @@ h1, h2, h3, h4, h5, h6 {
 # Header
 --------------------------------------------------------------*/
 #header {
-  background: transparent;
+  background-image: url('/assets/img/background/bg.jpg');
   transition: ease-in-out 0s;
   position: relative;
   height: 100vh;
@@ -292,10 +267,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   top: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.2) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: #09203a;
 }
 
 #header.header-top .social-links, #header.header-top h2 {
@@ -500,8 +472,9 @@ section .container {
 /* General Container Styling */
 .interests.container {
   padding: 40px 20px;
-  background-color: transparent;
+  background-color: 010e1b;
   border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Section Title */
@@ -1228,106 +1201,183 @@ section .container {
     transform: translateX(-50%);
   }
 }
+
+/* Safe Center Alignment for Header */
+#header h1, #header h2, #header .nav-menu {
+  text-align: center;
+}
+#header .nav-menu ul {
+  justify-content: center;
 }
 
-/*--------------------------------------------------------------
-# Glassmorphism Utility
---------------------------------------------------------------*/
-.glass-panel {
-  background: rgba(255, 255, 255, 0.05) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 24px !important;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
-  transition: all 0.3s ease-in-out !important;
-  color: #fff !important;
+/* ==============================================================
+   SAFE PREMIUM UI/UX AESTHETICS (NO LAYOUT CHANGES)
+   ============================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* Typography & Colors */
+body {
+  font-family: 'Outfit', sans-serif !important;
+  color: #e2e8f0;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif !important;
 }
 
-.glass-panel:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(18, 214, 64, 0.5) !important;
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(18, 214, 64, 0.2) !important;
+/* Gradients and Text Accents */
+.section-title h2, #header h2 span, .typing, .about-me h3, .resume-title {
+  background: linear-gradient(135deg, #00ff87, #60efff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+.section-title h2::after {
+  background: linear-gradient(135deg, #00ff87, #60efff) !important;
 }
 
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Glassmorphic Cards (Aesthetic only) */
+.about-me, .info-box, .resume-item, .icon-box, .portfolio-wrap, .education-card, .experience-card, .skills-card, .services-card {
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.3s ease !important;
+}
+.icon-box:hover, .resume-item:hover, .portfolio-wrap:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(0, 255, 135, 0.3) !important;
+  transform: translateY(-5px) !important;
 }
 
-@keyframes heroBgPan {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
-}
-
-/*--------------------------------------------------------------
-# Global Apple Glassmorphism UI Updates
---------------------------------------------------------------*/
-
-/* Apply rounded corners to all images */
-img {
-  border-radius: 16px;
-}
-
-/* Ensure buttons have rounded corners and slight translucency */
-.btn, button, input[type="submit"], input[type="button"] {
+/* Buttons */
+.btn-primary, button[type="submit"] {
+  background: linear-gradient(135deg, #00ff87, #60efff) !important;
+  color: #000 !important;
+  border: none !important;
   border-radius: 50px !important;
-  backdrop-filter: blur(10px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  font-weight: 700 !important;
+}
+.btn-primary:hover, button[type="submit"]:hover {
+  box-shadow: 0 5px 20px rgba(0, 255, 135, 0.4) !important;
+  opacity: 0.9 !important;
 }
 
-/* Form inputs styling */
-input, textarea, .form-control {
-  border-radius: 16px !important;
-  background: rgba(255, 255, 255, 0.05) !important;
+/* Form Inputs */
+.form-control {
+  background-color: rgba(255, 255, 255, 0.05) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
   color: #fff !important;
-  box-shadow: none !important;
+  border-radius: 8px !important;
+}
+.form-control:focus {
+  border-color: #00ff87 !important;
+  box-shadow: 0 0 10px rgba(0, 255, 135, 0.2) !important;
 }
 
-input:focus, textarea:focus, .form-control:focus {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(18, 214, 64, 0.5) !important;
+/* Nav Menu Hovers */
+#header .social-links a:hover {
+  background: #00ff87 !important;
+  color: #000 !important;
+}
+.nav-menu a:hover, .nav-menu .active > a {
+  color: #00ff87 !important;
 }
 
-/* Header Top glass effect */
+/* UI Layout Space Fix */
+section.section-show {
+  top: 110px !important; 
+}
+@media (max-width: 992px) {
+  section.section-show {
+    top: 90px !important;
+  }
+}
+
+.section-title h2 {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin-bottom: 25px !important;
+  font-size: 20px !important;
+}
+
+/* REMOVE BACKGROUND IMAGE */
+body {
+  background-image: none !important;
+  background: transparent !important;
+}
+
+/* GLASSMORPHIC HEADER OVERRIDE */
 #header.header-top {
-  background: rgba(0, 0, 0, 0.6) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(1, 14, 27, 0.7) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Mobile Nav Menu Dropdown glass effect */
-.navbar-mobile {
-  background: rgba(15, 15, 15, 0.8) !important;
-  backdrop-filter: blur(25px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(25px) saturate(200%) !important;
-  border-radius: 24px !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+/* FORCE REMOVE HEADER BACKGROUND IMAGE */
+#header:not(.header-top) {
+  background-image: none !important;
+  background: transparent !important;
+}
+#header::before {
+  display: none !important;
 }
 
-/* Custom Mac-style Scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+/* =========================================
+   FINAL UI FIXES (CENTERING & VISIBILITY)
+   ========================================= */
+
+/* 1. Center the Home Page Header completely */
+#header:not(.header-top) {
+  justify-content: center !important;
+  text-align: center !important;
+  width: 100% !important;
 }
-::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background-clip: content-box;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border: 2px solid transparent;
-  background-clip: content-box;
+#header:not(.header-top) .container {
+  margin: 0 auto !important;
 }
 
+/* 2. Fix the Section Titles being invisible */
+.section-title h2 {
+  display: block !important;
+  line-height: 1.2 !important; /* Original line-height: 1px was breaking the gradient */
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.section-title h2::after {
+  display: block !important;
+  margin: 10px auto !important; /* Center the underline */
+}
+.section-title {
+  text-align: center !important; /* Center the title container */
+}
+
+/* 3. Make sure the background isn't clipping */
+body {
+  background: transparent !important;
+}
+
+/* Center the social links on the home page */
+#header .social-links {
+  justify-content: center !important;
+  width: 100%;
+}
+
+/* Fix the Project Details Modal styling */
+.portfolio-details {
+  background: #010e1b !important;
+  color: #e2e8f0 !important;
+  min-height: 100vh;
+  padding: 30px;
+}
+.portfolio-details h2 {
+  color: #00ff87 !important;
+}
+.portfolio-details p, .portfolio-details li {
+  color: #a0aec0 !important;
+}
+.portfolio-details strong {
+  color: #fff !important;
+}

@@ -4,13 +4,12 @@
 * Author: BootstrapMade.com
 * License: https://bootstrapmade.com/license/
 */
-window.initMain = function() {
 !(function($) {
   "use strict";
 
   // Nav Menu
   $(document).on('click', '.nav-menu a, .mobile-nav a', function(e) {
-    if (this.hash) {
+    if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
       var hash = this.hash;
       var target = $(hash);
       if (target.length) {
@@ -126,10 +125,27 @@ window.initMain = function() {
     }
   });
 
+  // Porfolio isotope and filter
+  $(window).on('load', function() {
+    var portfolioIsotope = $('.portfolio-container').isotope({
+      itemSelector: '.portfolio-item',
+      layoutMode: 'fitRows'
+    });
 
+    $('#portfolio-flters li').on('click', function() {
+      $("#portfolio-flters li").removeClass('filter-active');
+      $(this).addClass('filter-active');
+
+      portfolioIsotope.isotope({
+        filter: $(this).data('filter')
+      });
+    });
+
+  });
 
   // Initiate venobox (lightbox feature used in portofilo)
-  $('.venobox').venobox();
+  $(document).ready(function() {
+    $('.venobox').venobox();
+  });
 
 })(jQuery);
-};
