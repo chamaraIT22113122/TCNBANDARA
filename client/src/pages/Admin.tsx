@@ -49,12 +49,14 @@ export default function Admin() {
   const [eDesc, setEDesc] = useState('');
   const [eImage, setEImage] = useState('');
   const [eLink, setELink] = useState('');
+  const [eButtonName, setEButtonName] = useState('');
 
   // Experience form
   const [exCompany, setExCompany] = useState('');
   const [exDate, setExDate] = useState('');
   const [exRole, setExRole] = useState('');
   const [exDesc, setExDesc] = useState('');
+  const [exImage, setExImage] = useState('');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -164,7 +166,7 @@ export default function Admin() {
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const MAX_DIM = 500; // Limit to 500px to avoid 1MB Firestore doc limit with multiple gallery images
+          const MAX_DIM = 1024; // Increased from 500 to 1024 for better image clarity
 
           if (width > height && width > MAX_DIM) {
             height *= MAX_DIM / width;
@@ -181,7 +183,7 @@ export default function Admin() {
             ctx.drawImage(img, 0, 0, width, height);
             
             // Force WebP for massive compression while keeping transparency
-            let dataUrl = canvas.toDataURL('image/webp', 0.5);
+            let dataUrl = canvas.toDataURL('image/webp', 0.8);
             
             // If the browser doesn't support WebP (it silently falls back to PNG), 
             // force JPEG to guarantee it fits under 1MB, filling transparent background with white
@@ -190,14 +192,14 @@ export default function Admin() {
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(img, 0, 0, width, height);
-                dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+                dataUrl = canvas.toDataURL('image/jpeg', 0.8);
             } else if (dataUrl.startsWith('data:image/png') && file.type === 'image/png') {
                 // If it was originally a PNG and webp isn't supported, we have to use jpeg to compress it
-                // because PNG ignores the 0.5 quality and will hit the 1MB limit.
+                // because PNG ignores the 0.8 quality and will hit the 1MB limit.
                 ctx.globalCompositeOperation = 'destination-over';
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+                dataUrl = canvas.toDataURL('image/jpeg', 0.8);
             }
             
             resolve(dataUrl);
@@ -315,40 +317,40 @@ export default function Admin() {
   // ─── Education CRUD ─────────────────────────────────────────────────────────
   const handleSaveEducation = async (e: React.FormEvent) => {
     e.preventDefault();
-    const data = { title: eTitle, date: eDate, description: eDesc, image: eImage, link: eLink };
+    const data = { title: eTitle, date: eDate, description: eDesc, image: eImage, link: eLink, buttonName: eButtonName };
     if (editingId) {
       await updateDoc(doc(db, 'education', editingId), data);
       setEditingId(null);
     } else {
       await addDoc(collection(db, 'education'), data);
     }
-    setETitle(''); setEDate(''); setEDesc(''); setEImage(''); setELink('');
+    setETitle(''); setEDate(''); setEDesc(''); setEImage(''); setELink(''); setEButtonName('');
     fetchAllData();
   };
 
   const handleEditEducation = (e: any) => {
     setEditingId(e.id); setETitle(e.title); setEDate(e.date);
-    setEDesc(e.description || ''); setEImage(e.image || ''); setELink(e.link || '');
+    setEDesc(e.description || ''); setEImage(e.image || ''); setELink(e.link || ''); setEButtonName(e.buttonName || '');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // ─── Experience CRUD ────────────────────────────────────────────────────────
   const handleSaveExperience = async (e: React.FormEvent) => {
     e.preventDefault();
-    const data = { company: exCompany, date: exDate, role: exRole, description: exDesc };
+    const data = { company: exCompany, date: exDate, role: exRole, description: exDesc, image: exImage };
     if (editingId) {
       await updateDoc(doc(db, 'experience', editingId), data);
       setEditingId(null);
     } else {
       await addDoc(collection(db, 'experience'), data);
     }
-    setExCompany(''); setExDate(''); setExRole(''); setExDesc('');
+    setExCompany(''); setExDate(''); setExRole(''); setExDesc(''); setExImage('');
     fetchAllData();
   };
 
   const handleEditExperience = (ex: any) => {
     setEditingId(ex.id); setExCompany(ex.company); setExDate(ex.date);
-    setExRole(ex.role); setExDesc(ex.description);
+    setExRole(ex.role); setExDesc(ex.description); setExImage(ex.image || '');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -363,8 +365,8 @@ export default function Admin() {
     setEditingId(null);
     setPTitle(''); setPThumbnail(''); setPGalleryImages([]); setPLink(''); setPButtonLabel(''); setPCategory('filter-app'); setPDesc(''); setPTechStack('');
     setPImages('');
-    setETitle(''); setEDate(''); setEDesc(''); setEImage(''); setELink('');
-    setExCompany(''); setExDate(''); setExRole(''); setExDesc('');
+    setETitle(''); setEDate(''); setEDesc(''); setEImage(''); setELink(''); setEButtonName('');
+    setExCompany(''); setExDate(''); setExRole(''); setExDesc(''); setExImage('');
   };
 
   // ─── Styles ─────────────────────────────────────────────────────────────────
@@ -624,8 +626,26 @@ export default function Admin() {
                   <div className="col-md-6"><label style={{ color: '#aaa', fontSize: '13px' }}>Course / Degree</label><input style={inputStyle} placeholder="e.g. BSc in IT" value={eTitle} onChange={e => setETitle(e.target.value)} required /></div>
                   <div className="col-md-6"><label style={{ color: '#aaa', fontSize: '13px' }}>Date</label><input style={inputStyle} placeholder="e.g. Oct 2021 - Present" value={eDate} onChange={e => setEDate(e.target.value)} required /></div>
                   <div className="col-12"><label style={{ color: '#aaa', fontSize: '13px' }}>Description</label><textarea style={{ ...inputStyle, height: '80px' }} value={eDesc} onChange={e => setEDesc(e.target.value)} /></div>
-                  <div className="col-md-6"><label style={{ color: '#aaa', fontSize: '13px' }}>Logo/Image URL</label><input style={inputStyle} placeholder="https://..." value={eImage} onChange={e => setEImage(e.target.value)} /></div>
+                  <div className="col-md-6">
+                    <label style={{ color: '#aaa', fontSize: '13px' }}>Logo/Image Upload</label>
+                    <input type="file" style={inputStyle} accept="image/*" onChange={async (e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        try {
+                          const url = await uploadImage(e.target.files[0], 'education');
+                          setEImage(url);
+                        } catch (err) {
+                          alert('Image processing failed.');
+                        }
+                      }
+                    }} />
+                    {eImage && <img src={eImage} alt="preview" style={{ marginTop: '8px', height: '40px', objectFit: 'contain' }} />}
+                  </div>
+                  <div className="col-md-6">
+                    <label style={{ color: '#aaa', fontSize: '13px' }}>Logo/Image URL (or Paste)</label>
+                    <input style={inputStyle} placeholder="https://..." value={eImage} onChange={e => setEImage(e.target.value)} />
+                  </div>
                   <div className="col-md-6"><label style={{ color: '#aaa', fontSize: '13px' }}>Certificate Link</label><input style={inputStyle} placeholder="https://..." value={eLink} onChange={e => setELink(e.target.value)} /></div>
+                  <div className="col-md-6"><label style={{ color: '#aaa', fontSize: '13px' }}>Button Name</label><input style={inputStyle} placeholder="Check out the Certificate" value={eButtonName} onChange={e => setEButtonName(e.target.value)} /></div>
                   <div className="col-12" style={{ display: 'flex', gap: '10px' }}>
                     <button type="submit" style={{ background: '#12d640', color: '#010e1b', border: 'none', borderRadius: '6px', padding: '10px 24px', fontWeight: 700, cursor: 'pointer' }}>{editingId ? 'Update' : 'Save'}</button>
                     {editingId && <button type="button" onClick={cancelEdit} style={{ background: '#1a2a3a', color: '#aaa', border: 'none', borderRadius: '6px', padding: '10px 16px', cursor: 'pointer' }}>Cancel</button>}
@@ -663,6 +683,24 @@ export default function Admin() {
                   <div className="col-md-6"><label style={{ color: '#aaa', fontSize: '13px' }}>Date</label><input style={inputStyle} placeholder="July 2025 - Present" value={exDate} onChange={e => setExDate(e.target.value)} required /></div>
                   <div className="col-12"><label style={{ color: '#aaa', fontSize: '13px' }}>Role</label><input style={inputStyle} value={exRole} onChange={e => setExRole(e.target.value)} required /></div>
                   <div className="col-12"><label style={{ color: '#aaa', fontSize: '13px' }}>Description (one bullet per line)</label><textarea style={{ ...inputStyle, height: '100px' }} value={exDesc} onChange={e => setExDesc(e.target.value)} /></div>
+                  <div className="col-md-6">
+                    <label style={{ color: '#aaa', fontSize: '13px' }}>Company Logo Upload</label>
+                    <input type="file" style={inputStyle} accept="image/*" onChange={async (e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        try {
+                          const url = await uploadImage(e.target.files[0], 'experience');
+                          setExImage(url);
+                        } catch (err) {
+                          alert('Image processing failed.');
+                        }
+                      }
+                    }} />
+                    {exImage && <img src={exImage} alt="preview" style={{ marginTop: '8px', height: '40px', objectFit: 'contain' }} />}
+                  </div>
+                  <div className="col-md-6">
+                    <label style={{ color: '#aaa', fontSize: '13px' }}>Company Logo URL (or Paste)</label>
+                    <input style={inputStyle} placeholder="https://..." value={exImage} onChange={e => setExImage(e.target.value)} />
+                  </div>
                   <div className="col-12" style={{ display: 'flex', gap: '10px' }}>
                     <button type="submit" style={{ background: '#12d640', color: '#010e1b', border: 'none', borderRadius: '6px', padding: '10px 24px', fontWeight: 700, cursor: 'pointer' }}>{editingId ? 'Update' : 'Save'}</button>
                     {editingId && <button type="button" onClick={cancelEdit} style={{ background: '#1a2a3a', color: '#aaa', border: 'none', borderRadius: '6px', padding: '10px 16px', cursor: 'pointer' }}>Cancel</button>}
@@ -673,6 +711,7 @@ export default function Admin() {
             <div>
               {experience.map(ex => (
                 <div key={ex.id} style={{ ...cardStyle }}>
+                  {ex.image && <img src={ex.image} alt="logo" style={{ height: '40px', objectFit: 'contain', marginBottom: '8px' }} />}
                   <h5 style={{ color: '#12d640' }}>{ex.company} <small style={{ color: '#ccc', fontWeight: 400 }}>— {ex.role}</small></h5>
                   <p style={{ color: '#aaa', fontSize: '13px' }}>{ex.date}</p>
                   <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>

@@ -998,7 +998,7 @@ function Home() {
                     <p>{e.description}</p>
                     {e.link && (
                       <a href={e.link} target="_blank" rel="noreferrer">
-                        Check out the Certificate
+                        {e.buttonName || 'Check out the Certificate'}
                       </a>
                     )}
                   </div>
@@ -1020,6 +1020,7 @@ function Home() {
               return (
                 <div key={ex.id} className="col-lg-12" data-aos="fade-up" data-aos-delay="200">
                   <div className="experience-item icon-box" style={{ textAlign: 'left' }}>
+                    {ex.image && <img loading="lazy" src={ex.image} alt="Company Logo" style={{ height: '50px', objectFit: 'contain', marginBottom: '10px' }} />}
                     <h4><span style={{ color: '#12d640' }}>{ex.company}</span></h4>
                     <h5
                       style={
